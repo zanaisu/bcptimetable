@@ -37,26 +37,41 @@ def init_db():
 
 def reset_db_function():
     """Reset the database by dropping all tables and recreating them."""
-    # Check if database file exists and remove it
-    db_path = os.path.join(app.instance_path, 'timetable.db')
-    if os.path.exists(db_path):
-        os.remove(db_path)
-        print(f"Removed existing database file: {db_path}")
-    
     # Import all models to ensure they're registered with SQLAlchemy
     from app.models.user import User
     from app.models.task import Task
     from app.models.subject import Subject
     from app.models.topic import Topic, TopicConfidence, SubtopicConfidence
     
-    # Create all tables
+    # For SQLite databases, try to remove the file
+    if app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite:///'):
+        db_path = os.path.join(app.instance_path, 'timetable.db')
+        if os.path.exists(db_path):
+            try:
+                os.remove(db_path)
+                print(f"Removed existing database file: {db_path}")
+            except Exception as e:
+                print(f"Could not remove database file: {e}")
+    
+    # For all database types, drop and recreate tables
     with app.app_context():
-        db.create_all()
-        print("Tables created successfully.")
+        try:
+            db.drop_all()
+            print("Dropped all tables.")
+        except Exception as e:
+            print(f"Error dropping tables: {e}")
         
-        # Initialize with curriculum data
-        from app.init_db import init_db as load_curriculum
-        load_curriculum()
+        try:
+            db.create_all()
+            print("Tables created successfully.")
+            
+            # Initialize with curriculum data
+            from app.init_db import init_db as load_curriculum
+            load_curriculum()
+            print("Database initialized with curriculum data.")
+        except Exception as e:
+            print(f"Error creating tables: {e}")
+            raise
             
     print("Database reset and initialized successfully.")
 
