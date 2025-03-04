@@ -1,4 +1,4 @@
-# A-Level Study Tracker
+# BCP Timetable
 
 A web application to help manage and track A-level studies for OCR A Chemistry, OCR A Biology, and AQA Psychology.
 
@@ -20,7 +20,7 @@ A web application to help manage and track A-level studies for OCR A Chemistry, 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/bcptimetable.git
+git clone https://github.com/zanaisu/bcptimetable.git
 cd bcptimetable
 ```
 
