@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Progress - A-Level Study Tracker{% endblock %}
+{% block page_title %}Progress & Statistics{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Summary Stats -->
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card border-left-primary shadow h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Completed Tasks
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold">{{ completed_tasks|length }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card border-left-success shadow h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Completion Rate
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold">{{ "%.1f"|format(completion_rate) }}%</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-percentage fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card border-left-info shadow h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Streak
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold">{{ 0 }} days</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-fire fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card border-left-warning shadow h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Study Time
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold">{{ 0 }} hours</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Subject Distribution Chart -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="m-0 fw-bold">Subject Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="subjectDistribution"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="m-0 fw-bold">Weekly Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="weeklyActivity"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lowest Confidence Topics -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 fw-bold">Lowest Confidence Topics</h5>
+                    <a href="{{ url_for('main.curriculum') }}" class="btn btn-sm btn-outline-primary">
+                        Update Confidence Levels
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Topic</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tc in topic_confidences|sort(attribute='confidence_level')[:10] %}
+                                <tr>
+                                    <td>{{ tc.topic.subject.name }}</td>
+                                    <td>{{ tc.topic.title }}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar {{ 'bg-danger' if tc.confidence_level <= 2 else ('bg-warning' if tc.confidence_level == 3 else 'bg-success') }}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ tc.confidence_level * 20 }}%"
+                                                 aria-valuenow="{{ tc.confidence_level }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="5">
+                                                {{ tc.confidence_level }}/5
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Tasks -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="m-0 fw-bold">Recent Completed Tasks</h5>
+                </div>
+                <div class="card-body">
+                    {% if completed_tasks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Task</th>
+                                    <th>Subject</th>
+                                    <th>Topic</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in completed_tasks|sort(attribute='date_completed', reverse=True)[:10] %}
+                                <tr>
+                                    <td>{{ task.date_completed.strftime('%d %b %Y') }}</td>
+                                    <td>{{ task.title }}</td>
+                                    <td>{{ task.subject.name }}</td>
+                                    <td>{{ task.topic.title if task.topic else '-' }}</td>
+                                    <td>
+                                        <span class="badge {{ 'bg-primary' if task.task_type == 'uplearn' else 'bg-secondary' }}">
+                                            {{ task.task_type|replace('_', ' ')|title }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-tasks fa-3x mb-3 text-muted"></i>
+                        <h5>No completed tasks yet</h5>
+                        <p class="text-muted">Complete some tasks to see your progress</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Subject Distribution Chart
+    const subjectLabels = [{% for subject, count in subject_counts.items() %}'{{ subject }}',{% endfor %}];
+    const subjectData = [{% for subject, count in subject_counts.items() %}{{ count }},{% endfor %}];
+    const subjectColors = ['#4e73df', '#1cc88a', '#36b9cc'];
+    
+    const subjectCtx = document.getElementById('subjectDistribution').getContext('2d');
+    const subjectChart = new Chart(subjectCtx, {
+        type: 'doughnut',
+        data: {
+            labels: subjectLabels,
+            datasets: [{
+                data: subjectData,
+                backgroundColor: subjectColors,
+                hoverBackgroundColor: subjectColors.map(color => color + 'dd'),
+                hoverBorderColor: 'rgba(234, 236, 244, 1)',
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    
+    // Weekly Activity Chart (placeholder data)
+    const weeklyLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const weeklyData = [3, 2, 4, 1, 5, 2, 3]; // Replace with actual data
+    
+    const weeklyCtx = document.getElementById('weeklyActivity').getContext('2d');
+    const weeklyChart = new Chart(weeklyCtx, {
+        type: 'bar',
+        data: {
+            labels: weeklyLabels,
+            datasets: [{
+                label: 'Tasks Completed',
+                data: weeklyData,
+                backgroundColor: '#4e73df',
+                borderColor: '#4e73df',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

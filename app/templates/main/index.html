@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - A-Level Study Tracker{% endblock %}
+{% block page_title %}Daily Tasks{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 fw-bold">
+                        {% if is_weekend %}
+                            Weekend Tasks ({{ today.strftime('%A, %d %B %Y') }})
+                        {% else %}
+                            Today's Tasks ({{ today.strftime('%A, %d %B %Y') }})
+                        {% endif %}
+                    </h5>
+                    <span class="badge bg-primary">
+                        {{ tasks|length }} Tasks
+                    </span>
+                </div>
+                <div class="card-body">
+                    {% if is_weekend %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Weekend mode: Complete tasks to earn points towards your weekend goal.
+                    </div>
+                    {% endif %}
+                    
+                    {% if tasks %}
+                    <div class="task-list">
+                        {% for task in tasks %}
+                        <div class="card task-card mb-3 {% if task.completed %}task-completed{% elif task.skipped %}task-skipped{% endif %}" data-task-id="{{ task.id }}">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5 class="task-title mb-1">{{ task.title }}</h5>
+                                        <p class="task-description text-muted mb-2">{{ task.description }}</p>
+                                        <div class="task-meta">
+                                            <span class="badge bg-secondary me-2">{{ task.subject.name }}</span>
+                                            <span class="badge bg-info me-2">{{ task.duration }} min</span>
+                                            <span class="badge bg-dark">{{ task.task_type|replace('_', ' ')|title }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-flex justify-content-end align-items-center mt-3 mt-md-0">
+                                        {% if not task.completed and not task.skipped %}
+                                        <button class="btn btn-sm btn-outline-primary me-2 complete-task-btn" data-task-id="{{ task.id }}">
+                                            <i class="fas fa-check me-1"></i> Complete
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary skip-task-btn" data-task-id="{{ task.id }}">
+                                            <i class="fas fa-sync-alt me-1"></i> Swap
+                                        </button>
+                                        {% elif task.completed %}
+                                        <span class="badge bg-success py-2 px-3">
+                                            <i class="fas fa-check me-1"></i> Completed
+                                        </span>
+                                        {% elif task.skipped %}
+                                        <span class="badge bg-danger py-2 px-3">
+                                            <i class="fas fa-times me-1"></i> Skipped
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-tasks fa-3x mb-3 text-muted"></i>
+                        <h5>No tasks for today yet!</h5>
+                        <p class="text-muted">Refresh the page to generate today's tasks.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Previous Days Tasks Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="m-0 fw-bold">Previous Days</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="previousTasksAccordion">
+                        <!-- Previous days will be loaded dynamically -->
+                        <div class="text-center py-4">
+                            <p class="text-muted">Loading previous tasks...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Complete task functionality
+    document.querySelectorAll('.complete-task-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const taskId = this.dataset.taskId;
+            completeTask(taskId);
+        });
+    });
+    
+    // Skip task functionality
+    document.querySelectorAll('.skip-task-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const taskId = this.dataset.taskId;
+            skipTask(taskId);
+        });
+    });
+    
+    // Function to mark a task as complete
+    function completeTask(taskId) {
+        fetch(`/api/tasks/complete/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update UI to show task as completed
+                const taskCard = document.querySelector(`.task-card[data-task-id="${taskId}"]`);
+                taskCard.classList.add('task-completed');
+                
+                // Replace buttons with completed badge
+                const buttonContainer = taskCard.querySelector('.col-md-4');
+                buttonContainer.innerHTML = `
+                    <span class="badge bg-success py-2 px-3">
+                        <i class="fas fa-check me-1"></i> Completed
+                    </span>
+                `;
+            }
+        })
+        .catch(error => console.error('Error completing task:', error));
+    }
+    
+    // Function to skip a task and get a replacement
+    function skipTask(taskId) {
+        fetch(`/api/tasks/skip/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update UI to show task as skipped
+                const taskCard = document.querySelector(`.task-card[data-task-id="${taskId}"]`);
+                taskCard.classList.add('task-skipped');
+                
+                // Replace buttons with skipped badge
+                const buttonContainer = taskCard.querySelector('.col-md-4');
+                buttonContainer.innerHTML = `
+                    <span class="badge bg-danger py-2 px-3">
+                        <i class="fas fa-times me-1"></i> Skipped
+                    </span>
+                `;
+                
+                // Add the new replacement task
+                const newTask = data.new_task;
+                const taskList = document.querySelector('.task-list');
+                
+                const newTaskHtml = `
+                <div class="card task-card mb-3" data-task-id="${newTask.id}">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="task-title mb-1">${newTask.title}</h5>
+                                <p class="task-description text-muted mb-2">${newTask.description}</p>
+                                <div class="task-meta">
+                                    <span class="badge bg-secondary me-2">${newTask.subject}</span>
+                                    <span class="badge bg-info me-2">${newTask.duration} min</span>
+                                    <span class="badge bg-dark">${newTask.task_type.replace('_', ' ').charAt(0).toUpperCase() + newTask.task_type.replace('_', ' ').slice(1)}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex justify-content-end align-items-center mt-3 mt-md-0">
+                                <button class="btn btn-sm btn-outline-primary me-2 complete-task-btn" data-task-id="${newTask.id}">
+                                    <i class="fas fa-check me-1"></i> Complete
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary skip-task-btn" data-task-id="${newTask.id}">
+                                    <i class="fas fa-sync-alt me-1"></i> Swap
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+                
+                taskList.insertAdjacentHTML('beforeend', newTaskHtml);
+                
+                // Add event listeners to the new task buttons
+                const newCompleteBtn = document.querySelector(`.complete-task-btn[data-task-id="${newTask.id}"]`);
+                const newSkipBtn = document.querySelector(`.skip-task-btn[data-task-id="${newTask.id}"]`);
+                
+                newCompleteBtn.addEventListener('click', function() {
+                    completeTask(newTask.id);
+                });
+                
+                newSkipBtn.addEventListener('click', function() {
+                    skipTask(newTask.id);
+                });
+            }
+        })
+        .catch(error => console.error('Error skipping task:', error));
+    }
+});
+</script>
+{% endblock %}

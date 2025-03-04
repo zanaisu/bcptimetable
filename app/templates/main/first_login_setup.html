@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}First-Time Setup - A-Level Study Tracker{% endblock %}
+
+{% block styles %}
+<style>
+    .btn-check:checked + .btn-outline-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .topic-confidence-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .topic-confidence-section h5 {
+        margin-top: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .subtopic-list {
+        margin-top: 10px;
+        padding-left: 20px;
+    }
+    
+    .subtopic-item {
+        margin-bottom: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container setup-page">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Welcome to A-Level Study Tracker!</h2>
+                    <p class="lead text-center mb-4">
+                        Let's set up your preferences to help you get the most out of your study plan.
+                    </p>
+                    
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <h4 class="mb-3">Study Preferences</h4>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form.study_hours.label(class="form-label") }}
+                                    {{ form.study_hours(class="form-control") }}
+                                    <div class="form-text">
+                                        This determines how many tasks you'll get each day.
+                                    </div>
+                                    {% for error in form.study_hours.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form.weekend_points.label(class="form-label") }}
+                                    {{ form.weekend_points(class="form-control") }}
+                                    <div class="form-text">
+                                        Goal for Friday-Sunday (30 points ≈ 10 hours of study).
+                                    </div>
+                                    {% for error in form.weekend_points.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3">UpLearn Integration</h4>
+                        <div class="mb-4">
+                            <div class="form-check mb-2">
+                                {{ form.uplearn_biology(class="form-check-input") }}
+                                {{ form.uplearn_biology.label(class="form-check-label") }}
+                                <div class="form-text">
+                                    If enabled, Biology tasks will focus on UpLearn content.
+                                </div>
+                            </div>
+                            <div class="form-check">
+                                {{ form.uplearn_chemistry(class="form-check-input") }}
+                                {{ form.uplearn_chemistry.label(class="form-check-label") }}
+                                <div class="form-text">
+                                    If enabled, Chemistry tasks will focus on UpLearn content.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3">Topic Confidence Setup</h4>
+                        <p class="mb-3">
+                            Rate your confidence level for each topic (1 = lowest, 5 = highest). 
+                            Topics with lower confidence will appear more frequently in your daily tasks.
+                        </p>
+                        
+                        <!-- Biology Year 12 Topics -->
+                        <div class="topic-confidence-section">
+                            <h5>Biology Year 12</h5>
+                            <div class="accordion" id="biologyYear12SetupAccordion">
+                                {% for topic_group in curriculum['Biology Year 12'].Topics %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bioY12Setup{{ loop.index }}" aria-expanded="false">
+                                            {{ topic_group.Name }}: {{ topic_group.Title }}
+                                        </button>
+                                    </h2>
+                                    <div class="topic-confidence-selector mt-2">
+                                        <label>Confidence for this topic:</label>
+                                        <div class="btn-group ms-2" role="group">
+                                            {% for i in range(1, 6) %}
+                                            <input type="radio" class="btn-check" name="topic_{{ topic_group.Name }}_BY12" id="bio_y12_topic_{{ topic_group.Name }}_{{ i }}" value="{{ i }}" {{ 'checked' if i == 3 else '' }}>
+                                            <label class="btn btn-outline-primary" for="bio_y12_topic_{{ topic_group.Name }}_{{ i }}">{{ i }}</label>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div id="bioY12Setup{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#biologyYear12SetupAccordion">
+                                        <div class="accordion-body">
+                                            <h6>Subtopics:</h6>
+                                            <ul class="subtopic-list">
+                                                {% for subtopic in topic_group.Subtopics %}
+                                                <li class="subtopic-item">
+                                                    <strong>{{ subtopic.Title }}</strong>: {{ subtopic.Description }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Biology Year 13 Topics -->
+                        <div class="topic-confidence-section">
+                            <h5>Biology Year 13</h5>
+                            <div class="accordion" id="biologyYear13SetupAccordion">
+                                {% for topic_group in curriculum['Biology Year 13'].Topics %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bioY13Setup{{ loop.index }}" aria-expanded="false">
+                                            {{ topic_group.Name }}: {{ topic_group.Title }}
+                                        </button>
+                                    </h2>
+                                    <div class="topic-confidence-selector mt-2">
+                                        <label>Confidence for this topic:</label>
+                                        <div class="btn-group ms-2" role="group">
+                                            {% for i in range(1, 6) %}
+                                            <input type="radio" class="btn-check" name="topic_{{ topic_group.Name }}_BY13" id="bio_y13_topic_{{ topic_group.Name }}_{{ i }}" value="{{ i }}" {{ 'checked' if i == 3 else '' }}>
+                                            <label class="btn btn-outline-primary" for="bio_y13_topic_{{ topic_group.Name }}_{{ i }}">{{ i }}</label>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div id="bioY13Setup{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#biologyYear13SetupAccordion">
+                                        <div class="accordion-body">
+                                            <h6>Subtopics:</h6>
+                                            <ul class="subtopic-list">
+                                                {% for subtopic in topic_group.Subtopics %}
+                                                <li class="subtopic-item">
+                                                    <strong>{{ subtopic.Title }}</strong>: {{ subtopic.Description }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Chemistry Topics -->
+                        <div class="topic-confidence-section">
+                            <h5>Chemistry</h5>
+                            <div class="accordion" id="chemistrySetupAccordion">
+                                {% for topic_group in curriculum.Chemistry.Topics %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#chemSetup{{ loop.index }}" aria-expanded="false">
+                                            {{ topic_group.Name }}: {{ topic_group.Title }}
+                                        </button>
+                                    </h2>
+                                    <div class="topic-confidence-selector mt-2">
+                                        <label>Confidence for this topic:</label>
+                                        <div class="btn-group ms-2" role="group">
+                                            {% for i in range(1, 6) %}
+                                            <input type="radio" class="btn-check" name="topic_{{ topic_group.Name }}_CHEM" id="chem_topic_{{ topic_group.Name }}_{{ i }}" value="{{ i }}" {{ 'checked' if i == 3 else '' }}>
+                                            <label class="btn btn-outline-primary" for="chem_topic_{{ topic_group.Name }}_{{ i }}">{{ i }}</label>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div id="chemSetup{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#chemistrySetupAccordion">
+                                        <div class="accordion-body">
+                                            <h6>Subtopics:</h6>
+                                            <ul class="subtopic-list">
+                                                {% for subtopic in topic_group.Subtopics %}
+                                                <li class="subtopic-item">
+                                                    <strong>{{ subtopic.Title }}</strong>: {{ subtopic.Description }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Psychology Topics -->
+                        <div class="topic-confidence-section">
+                            <h5>Psychology</h5>
+                            <div class="accordion" id="psychSetupAccordion">
+                                {% for topic_group in curriculum.Psychology.Topics %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#psychSetup{{ loop.index }}" aria-expanded="false">
+                                            {{ topic_group.Name }}: {{ topic_group.Title }}
+                                        </button>
+                                    </h2>
+                                    <div class="topic-confidence-selector mt-2">
+                                        <label>Confidence for these topics:</label>
+                                        <div class="btn-group ms-2" role="group">
+                                            {% for i in range(1, 6) %}
+                                            <input type="radio" class="btn-check" name="topic_{{ topic_group.Name|lower }}_PSYCH" id="psych_topic_{{ topic_group.Name|lower }}_{{ i }}" value="{{ i }}" {{ 'checked' if i == 3 else '' }}>
+                                            <label class="btn btn-outline-primary" for="psych_topic_{{ topic_group.Name|lower }}_{{ i }}">{{ i }}</label>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div id="psychSetup{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#psychSetupAccordion">
+                                        <div class="accordion-body">
+                                            <h6>Topics in this paper:</h6>
+                                            <ul class="subtopic-list">
+                                                {% for subtopic in topic_group.Subtopics %}
+                                                <li class="subtopic-item">
+                                                    <strong>{{ subtopic.Title }}</strong>: {{ subtopic.Description }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure the radio buttons in the form work correctly
+    document.querySelectorAll('.btn-check').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const confidenceValue = parseInt(this.value);
+            const topicId = this.name;
+            
+            console.log(`Set topic ${topicId} confidence to ${confidenceValue}`);
+        });
+    });
+});
+</script>
+{% endblock %}

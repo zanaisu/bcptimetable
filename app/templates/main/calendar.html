@@ -1,0 +1,489 @@
+{% extends "base.html" %}
+
+{% block title %}Calendar - A-Level Study Tracker{% endblock %}
+{% block page_title %}Study Calendar{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="m-0 fw-bold">Jump to Exam Week</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-danger" data-date="2025-05-12">
+                            <i class="fas fa-graduation-cap me-2"></i> Biology Exams Week
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-date="2025-05-19">
+                            <i class="fas fa-flask me-2"></i> Chemistry Exams Week
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-date="2025-06-02">
+                            <i class="fas fa-brain me-2"></i> Psychology Exams Week
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 fw-bold">Upcoming Exams</h5>
+                    <div>
+                        <button id="prevMonth" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="nextMonth" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Exam</th>
+                                    <th>Date</th>
+                                    <th>Days Left</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subject, dates in exam_dates.items() %}
+                                    {% for date in dates %}
+                                    <tr>
+                                        <td>{{ subject }}</td>
+                                        <td>Paper {{ loop.index }}</td>
+                                        <td>{{ date }}</td>
+                                        <td>
+                                            {% set days_left = ((date|string)|strptime('%Y-%m-%d') - now).days %}
+                                            <span class="{{ 'text-danger fw-bold' if days_left < 14 else ('text-warning' if days_left < 30) }}">
+                                                {{ days_left }} days
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 fw-bold">
+                        <span id="calendarMonth">March</span> <span id="calendarYear">2025</span>
+                    </h5>
+                    <div class="btn-group">
+                        <button id="prevMonth" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="today" class="btn btn-sm btn-primary">Today</button>
+                        <button id="nextMonth" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="calendar-container">
+                        <!-- Calendar header -->
+                        <div class="row mb-2">
+                            <div class="col">Mon</div>
+                            <div class="col">Tue</div>
+                            <div class="col">Wed</div>
+                            <div class="col">Thu</div>
+                            <div class="col">Fri</div>
+                            <div class="col">Sat</div>
+                            <div class="col">Sun</div>
+                        </div>
+                        
+                        <!-- Calendar grid (will be filled by JavaScript) -->
+                        <div id="calendarGrid">
+                            <!-- Will be filled dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Task Modal -->
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskModalLabel">Tasks for <span id="modalDate"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalTaskList">
+                    <!-- Will be filled dynamically -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Current date for calculations
+    let currentDate = new Date();
+    let displayedMonth = currentDate.getMonth();
+    let displayedYear = currentDate.getFullYear();
+    
+    // Exam dates from server data
+    const examDates = {
+        {% for subject, dates in exam_dates.items() %}
+        '{{ subject }}': [{% for date in dates %}'{{ date }}',{% endfor %}],
+        {% endfor %}
+    };
+    
+    // Tasks from server data (need to be organized by date)
+    const tasks = [
+        {% for task in tasks %}
+        {
+            id: {{ task.id }},
+            title: '{{ task.title }}',
+            subject: '{{ task.subject.name }}',
+            date: '{{ task.date_assigned }}',
+            completed: {{ 'true' if task.completed else 'false' }},
+            skipped: {{ 'true' if task.skipped else 'false' }}
+        },
+        {% endfor %}
+    ];
+    
+    // Group tasks by date
+    const tasksByDate = {};
+    tasks.forEach(task => {
+        if (!tasksByDate[task.date]) {
+            tasksByDate[task.date] = [];
+        }
+        tasksByDate[task.date].push(task);
+    });
+    
+    // Initialize calendar
+    renderCalendar(displayedMonth, displayedYear);
+    
+    // Event listeners for navigation buttons
+    document.querySelectorAll('#prevMonth').forEach(btn => {
+        btn.addEventListener('click', function() {
+            displayedMonth--;
+            if (displayedMonth < 0) {
+                displayedMonth = 11;
+                displayedYear--;
+            }
+            renderCalendar(displayedMonth, displayedYear);
+        });
+    });
+    
+    document.querySelectorAll('#nextMonth').forEach(btn => {
+        btn.addEventListener('click', function() {
+            displayedMonth++;
+            if (displayedMonth > 11) {
+                displayedMonth = 0;
+                displayedYear++;
+            }
+            renderCalendar(displayedMonth, displayedYear);
+        });
+    });
+    
+    document.getElementById('today').addEventListener('click', function() {
+        const today = new Date();
+        displayedMonth = today.getMonth();
+        displayedYear = today.getFullYear();
+        renderCalendar(displayedMonth, displayedYear);
+    });
+    
+    // Event listeners for exam week buttons
+    document.querySelectorAll('.btn[data-date]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const dateStr = this.dataset.date;
+            const date = new Date(dateStr);
+            displayedMonth = date.getMonth();
+            displayedYear = date.getFullYear();
+            renderCalendar(displayedMonth, displayedYear);
+        });
+    });
+    
+    // Task modal event handling
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('calendar-day') || e.target.closest('.calendar-day')) {
+            const dayElement = e.target.classList.contains('calendar-day') ? e.target : e.target.closest('.calendar-day');
+            const dateStr = dayElement.dataset.date;
+            if (dateStr) {
+                showTasksForDate(dateStr);
+            }
+        }
+    });
+    
+    // Function to render the calendar
+    function renderCalendar(month, year) {
+        const calendarGrid = document.getElementById('calendarGrid');
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        // Update header
+        document.getElementById('calendarMonth').textContent = monthNames[month];
+        document.getElementById('calendarYear').textContent = year;
+        
+        // Clear previous calendar
+        calendarGrid.innerHTML = '';
+        
+        // Get first day of the month (0 = Sunday, 1 = Monday, etc.)
+        const firstDay = new Date(year, month, 1).getDay();
+        // Convert to Monday-based index (0 = Monday, 6 = Sunday)
+        const firstDayMonday = (firstDay === 0) ? 6 : firstDay - 1;
+        
+        // Get number of days in the month
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        // Create calendar rows
+        let dayCounter = 1;
+        let calendarHTML = '';
+        
+        // Determine today's date for highlighting
+        const today = new Date();
+        const isCurrentMonth = (today.getMonth() === month && today.getFullYear() === year);
+        const todayDate = today.getDate();
+        
+        // Create rows for the calendar
+        for (let i = 0; i < 6; i++) {  // Up to 6 rows
+            let rowHTML = '<div class="row mb-2">';
+            
+            for (let j = 0; j < 7; j++) {  // 7 days per row
+                if (i === 0 && j < firstDayMonday) {
+                    // Empty cells before the first day
+                    rowHTML += '<div class="col calendar-day empty"></div>';
+                } else if (dayCounter > daysInMonth) {
+                    // Empty cells after the last day
+                    rowHTML += '<div class="col calendar-day empty"></div>';
+                } else {
+                    // Valid day cell
+                    const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${dayCounter.toString().padStart(2, '0')}`;
+                    const isToday = isCurrentMonth && dayCounter === todayDate;
+                    const isWeekend = j >= 5;  // Saturday and Sunday
+                    
+                    // Check if this is an exam date
+                    let hasExam = false;
+                    Object.values(examDates).forEach(dates => {
+                        if (dates.includes(dateStr)) {
+                            hasExam = true;
+                        }
+                    });
+                    
+                    // Get tasks for this date
+                    const dayTasks = tasksByDate[dateStr] || [];
+                    
+                    // Create the day cell with appropriate classes
+                    rowHTML += `<div class="col calendar-day${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}${hasExam ? ' has-exam' : ''}" data-date="${dateStr}">
+                                    <div class="day-number">${dayCounter}</div>`;
+                    
+                    // Add exam indicator if it's an exam day
+                    if (hasExam) {
+                        rowHTML += `<div class="exam-indicator">
+                                        <span class="badge bg-danger">Exam</span>
+                                    </div>`;
+                    }
+                    
+                    // Add tasks for this day
+                    dayTasks.forEach(task => {
+                        const taskClass = task.completed ? 'bg-success' : (task.skipped ? 'bg-danger' : 'bg-info');
+                        rowHTML += `<a href="#" class="task-pill ${taskClass}" data-task-id="${task.id}">
+                                        ${task.title}
+                                    </a>`;
+                    });
+                    
+                    rowHTML += '</div>';
+                    dayCounter++;
+                }
+            }
+            
+            rowHTML += '</div>';
+            calendarHTML += rowHTML;
+            
+            // If we've displayed all days, stop creating rows
+            if (dayCounter > daysInMonth) {
+                break;
+            }
+        }
+        
+        calendarGrid.innerHTML = calendarHTML;
+    }
+    
+    // Function to show tasks for a specific date in the modal
+    function showTasksForDate(dateStr) {
+        const modalDate = document.getElementById('modalDate');
+        const modalTaskList = document.getElementById('modalTaskList');
+        const taskModal = new bootstrap.Modal(document.getElementById('taskModal'));
+        
+        // Format date for display
+        const date = new Date(dateStr);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = date.toLocaleDateString('en-US', options);
+        
+        // Set modal title
+        modalDate.textContent = formattedDate;
+        
+        // Get tasks for this date
+        const dayTasks = tasksByDate[dateStr] || [];
+        
+        // Check if this is an exam date
+        let examSubjects = [];
+        Object.entries(examDates).forEach(([subject, dates]) => {
+            if (dates.includes(dateStr)) {
+                examSubjects.push(subject);
+            }
+        });
+        
+        // Build modal content
+        let modalContent = '';
+        
+        // Show exams
+        if (examSubjects.length > 0) {
+            modalContent += '<div class="alert alert-danger">';
+            examSubjects.forEach(subject => {
+                modalContent += `<div><strong>${subject} Exam</strong></div>`;
+            });
+            modalContent += '</div>';
+        }
+        
+        // Show tasks
+        if (dayTasks.length > 0) {
+            modalContent += '<div class="list-group">';
+            dayTasks.forEach(task => {
+                const taskClass = task.completed ? 'list-group-item-success' : (task.skipped ? 'list-group-item-danger' : '');
+                modalContent += `
+                    <div class="list-group-item ${taskClass}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">${task.title}</h5>
+                            <small>${task.subject}</small>
+                        </div>
+                        <div class="mt-2">
+                            ${task.completed ? 
+                                '<span class="badge bg-success">Completed</span>' : 
+                                (task.skipped ? 
+                                    '<span class="badge bg-danger">Skipped</span>' : 
+                                    `<button class="btn btn-sm btn-outline-primary me-2" onclick="completeTask(${task.id})">
+                                        <i class="fas fa-check me-1"></i> Complete
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="skipTask(${task.id})">
+                                        <i class="fas fa-sync-alt me-1"></i> Swap
+                                    </button>`
+                                )
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+            modalContent += '</div>';
+        } else {
+            modalContent += '<div class="text-center py-3">';
+            if (examSubjects.length === 0) {
+                modalContent += `
+                    <i class="fas fa-calendar-day fa-3x mb-3 text-muted"></i>
+                    <h5>No tasks for this day</h5>
+                `;
+            }
+            modalContent += '</div>';
+        }
+        
+        // Set modal content
+        modalTaskList.innerHTML = modalContent;
+        
+        // Show the modal
+        taskModal.show();
+    }
+    
+    // Global functions for task completion (called from the modal)
+    window.completeTask = function(taskId) {
+        fetch(`/api/tasks/complete/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update UI and local data
+                tasks.forEach(task => {
+                    if (task.id === taskId) {
+                        task.completed = true;
+                    }
+                });
+                
+                // Re-render the calendar
+                renderCalendar(displayedMonth, displayedYear);
+                
+                // Close the modal
+                bootstrap.Modal.getInstance(document.getElementById('taskModal')).hide();
+            }
+        })
+        .catch(error => console.error('Error completing task:', error));
+    };
+    
+    window.skipTask = function(taskId) {
+        fetch(`/api/tasks/skip/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update UI and local data
+                tasks.forEach(task => {
+                    if (task.id === taskId) {
+                        task.skipped = true;
+                    }
+                });
+                
+                // Add the new task to the data
+                const newTask = data.new_task;
+                tasks.push({
+                    id: newTask.id,
+                    title: newTask.title,
+                    subject: newTask.subject,
+                    date: new Date().toISOString().split('T')[0], // Today's date
+                    completed: false,
+                    skipped: false
+                });
+                
+                // Update tasksByDate
+                const today = new Date().toISOString().split('T')[0];
+                if (!tasksByDate[today]) {
+                    tasksByDate[today] = [];
+                }
+                tasksByDate[today].push({
+                    id: newTask.id,
+                    title: newTask.title,
+                    subject: newTask.subject,
+                    date: today,
+                    completed: false,
+                    skipped: false
+                });
+                
+                // Re-render the calendar
+                renderCalendar(displayedMonth, displayedYear);
+                
+                // Close the modal
+                bootstrap.Modal.getInstance(document.getElementById('taskModal')).hide();
+            }
+        })
+        .catch(error => console.error('Error skipping task:', error));
+    };
+});
+</script>
+{% endblock %}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}A-Level Study Tracker{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Dark mode styling (conditional) -->
+    {% if current_user.is_authenticated and current_user.dark_mode %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dark-mode.css') }}">
+    {% endif %}
+    
+    {% block styles %}{% endblock %}
+</head>
+<body class="{% if current_user.is_authenticated and current_user.dark_mode %}dark-mode{% endif %}">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar (shown only for authenticated users) -->
+            {% if current_user.is_authenticated and not current_user.is_first_login %}
+            <div id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 px-3">
+                        <h5 class="m-0">A-Level Study Tracker</h5>
+                        <button id="sidebar-toggle-btn" class="btn btn-sm d-md-none">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_for('main.index') %}active{% endif %}" href="{{ url_for('main.index') }}">
+                                <i class="fas fa-home me-2"></i>
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_for('main.curriculum') %}active{% endif %}" href="{{ url_for('main.curriculum') }}">
+                                <i class="fas fa-book me-2"></i>
+                                Curriculum
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_for('main.progress') %}active{% endif %}" href="{{ url_for('main.progress') }}">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Progress
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_for('main.calendar') %}active{% endif %}" href="{{ url_for('main.calendar') }}">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                Calendar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == url_for('main.settings') %}active{% endif %}" href="{{ url_for('main.settings') }}">
+                                <i class="fas fa-cog me-2"></i>
+                                Settings
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr>
+                    <div class="px-3 mt-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="darkModeSwitch" {% if current_user.dark_mode %}checked{% endif %}>
+                            <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
+                        </div>
+                    </div>
+                    
+                    <div class="px-3 mt-4">
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Main content -->
+            <main class="{% if current_user.is_authenticated and not current_user.is_first_login %}col-md-9 ms-sm-auto col-lg-10 px-md-4{% else %}col-md-12{% endif %}">
+                {% if current_user.is_authenticated and not current_user.is_first_login %}
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <button id="mobile-sidebar-toggle" class="btn btn-sm btn-outline-secondary d-md-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                {% endif %}
+                
+                <!-- Flash messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js for Progress page -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

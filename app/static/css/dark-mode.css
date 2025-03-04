@@ -1,0 +1,185 @@
+/* Dark Mode Theme */
+body.dark-mode {
+    background-color: #1a1d21;
+    color: #e4e6eb;
+}
+
+/* Card styles */
+.dark-mode .card {
+    background-color: #242830;
+    border-color: #2c2f33;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .card-header {
+    background-color: #2e323a;
+    border-bottom-color: #3a3f48;
+}
+
+.dark-mode .card-footer {
+    background-color: #2e323a;
+    border-top-color: #3a3f48;
+}
+
+/* Form controls */
+.dark-mode .form-control {
+    background-color: #333740;
+    border-color: #404650;
+    color: #e4e6eb;
+}
+
+.dark-mode .form-control:focus {
+    background-color: #3a3f48;
+    border-color: #4d5464;
+    color: #e4e6eb;
+}
+
+.dark-mode .form-select {
+    background-color: #333740;
+    border-color: #404650;
+    color: #e4e6eb;
+}
+
+/* Tables */
+.dark-mode .table {
+    color: #e4e6eb;
+}
+
+.dark-mode .table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+.dark-mode .table thead th {
+    border-bottom-color: #3a3f48;
+}
+
+.dark-mode .table td, .dark-mode .table th {
+    border-color: #3a3f48;
+}
+
+/* List groups */
+.dark-mode .list-group-item {
+    background-color: #242830;
+    border-color: #2c2f33;
+    color: #e4e6eb;
+}
+
+/* Navs and tabs */
+.dark-mode .nav-tabs {
+    border-bottom-color: #3a3f48;
+}
+
+.dark-mode .nav-tabs .nav-link.active,
+.dark-mode .nav-tabs .nav-item.show .nav-link {
+    background-color: #242830;
+    border-color: #3a3f48 #3a3f48 #242830;
+    color: #e4e6eb;
+}
+
+.dark-mode .nav-tabs .nav-link:hover {
+    border-color: #3a3f48;
+}
+
+/* Sidebar */
+.dark-mode .sidebar {
+    background-color: #242830;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .sidebar .nav-link {
+    color: #abb3c2;
+}
+
+.dark-mode .sidebar .nav-link:hover,
+.dark-mode .sidebar .nav-link.active {
+    color: #e4e6eb;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Buttons */
+.dark-mode .btn-outline-secondary {
+    color: #abb3c2;
+    border-color: #4d5464;
+}
+
+.dark-mode .btn-outline-secondary:hover {
+    background-color: #4d5464;
+    color: #e4e6eb;
+    border-color: #4d5464;
+}
+
+/* Inputs and focus */
+.dark-mode .form-control:focus,
+.dark-mode .form-select:focus,
+.dark-mode .btn:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.15);
+}
+
+/* Accordion */
+.dark-mode .accordion-item {
+    background-color: #242830;
+    border-color: #3a3f48;
+}
+
+.dark-mode .accordion-button {
+    background-color: #2e323a;
+    color: #e4e6eb;
+    border-color: #3a3f48;
+}
+
+.dark-mode .accordion-button:not(.collapsed) {
+    background-color: #3a3f48;
+    color: #e4e6eb;
+}
+
+.dark-mode .accordion-button::after {
+    filter: invert(1);
+}
+
+/* Alerts */
+.dark-mode .alert-info {
+    background-color: #17294c;
+    border-color: #1a3061;
+    color: #9bbcf1;
+}
+
+/* Task cards */
+.dark-mode .task-card {
+    background-color: #242830;
+}
+
+.dark-mode .task-completed {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.dark-mode .task-skipped {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Calendar */
+.dark-mode .calendar-day {
+    background-color: #242830;
+    border-color: #3a3f48;
+}
+
+.dark-mode .calendar-day.weekend {
+    background-color: #1e2125;
+}
+
+.dark-mode .calendar-day.today {
+    background-color: rgba(74, 111, 220, 0.15);
+    border-color: #4a6fdc;
+}
+
+.dark-mode .calendar-day.has-exam {
+    background-color: rgba(220, 53, 69, 0.15);
+}
+
+.dark-mode .task-pill {
+    background-color: #333740;
+    color: #e4e6eb;
+}
+
+.dark-mode .task-pill:hover {
+    background-color: #3a3f48;
+}

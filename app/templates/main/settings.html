@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - A-Level Study Tracker{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h4 class="mb-4">Study Preferences</h4>
+                    
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form.study_hours.label(class="form-label") }}
+                                    {{ form.study_hours(class="form-control") }}
+                                    <div class="form-text">
+                                        This determines how many tasks you'll get each day.
+                                    </div>
+                                    {% for error in form.study_hours.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form.weekend_points.label(class="form-label") }}
+                                    {{ form.weekend_points(class="form-control") }}
+                                    <div class="form-text">
+                                        Goal for Friday-Sunday (30 points ≈ 10 hours of study).
+                                    </div>
+                                    {% for error in form.weekend_points.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3">UpLearn Integration</h4>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    {{ form.uplearn_biology(class="form-check-input") }}
+                                    {{ form.uplearn_biology.label(class="form-check-label") }}
+                                    <div class="form-text">
+                                        If enabled, Biology tasks will focus on UpLearn content.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    {{ form.uplearn_chemistry(class="form-check-input") }}
+                                    {{ form.uplearn_chemistry.label(class="form-check-label") }}
+                                    <div class="form-text">
+                                        If enabled, Chemistry tasks will focus on UpLearn content.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3">Appearance</h4>
+                        <div class="form-check form-switch mb-4">
+                            {{ form.dark_mode(class="form-check-input") }}
+                            {{ form.dark_mode.label(class="form-check-label") }}
+                        </div>
+                        
+                        <div class="d-grid gap-2 col-lg-4 mx-auto mt-4">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="m-0 fw-bold">Topic Confidences</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        To adjust your topic confidence levels, please visit the <a href="{{ url_for('main.curriculum') }}">Curriculum page</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="m-0 fw-bold">Account</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Username</h6>
+                            <p>{{ current_user.username }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Email</h6>
+                            <p>{{ current_user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h6>Member Since</h6>
+                            <p>{{ current_user.created_at.strftime('%d %B %Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

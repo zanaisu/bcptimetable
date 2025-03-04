@@ -1,0 +1,540 @@
+{
+  "Biology Year 12": {
+    "Title": "OCR A-Level Biology Year 12 (H420)",
+    "Topics": [
+      {
+        "Name": "Module 1",
+        "Title": "Development of Practical Skills in Biology",
+        "Description": "Applies to all modules and both years",
+        "Subtopics": [
+          {
+            "Title": "Planning experiments",
+            "Description": "Practical research methods and experimental design"
+          },
+          {
+            "Title": "Collecting and recording data",
+            "Description": "Data collection methods and standardization techniques"
+          },
+          {
+            "Title": "Analyzing and interpreting data",
+            "Description": "Statistical treatment and visualization of results"
+          },
+          {
+            "Title": "Evaluating experiments",
+            "Description": "Assessing validity, reliability and limitations"
+          }
+        ]
+      },
+      {
+        "Name": "Module 2",
+        "Title": "Foundations in Biology",
+        "Description": "Core biological concepts and fundamentals",
+        "Subtopics": [
+          {
+            "Title": "Cell structure",
+            "Description": "microscopy, organelles, cell theory"
+          },
+          {
+            "Title": "Biological molecules",
+            "Description": "water, carbohydrates, lipids, proteins, nucleic acids"
+          },
+          {
+            "Title": "Enzymes",
+            "Description": "action, inhibition, factors affecting rate"
+          },
+          {
+            "Title": "Biological membranes",
+            "Description": "structure, transport, diffusion, osmosis, active transport"
+          },
+          {
+            "Title": "Cell division, diversity, and organisation",
+            "Description": "mitosis, meiosis, stem cells, specialised cells"
+          }
+        ]
+      },
+      {
+        "Name": "Module 3",
+        "Title": "Exchange and Transport",
+        "Description": "Systems for material exchange in organisms",
+        "Subtopics": [
+          {
+            "Title": "Exchange surfaces",
+            "Description": "SA:V, diffusion, gas exchange in humans, insects, fish"
+          },
+          {
+            "Title": "Transport in animals",
+            "Description": "circulatory system, blood vessels, heart, cardiac cycle, oxygen dissociation"
+          },
+          {
+            "Title": "Transport in plants",
+            "Description": "xylem, phloem, transpiration, translocation"
+          }
+        ]
+      },
+      {
+        "Name": "Module 4",
+        "Title": "Biodiversity, Evolution & Disease",
+        "Description": "Principles of classification, evolution, and disease",
+        "Subtopics": [
+          {
+            "Title": "Disease and the immune system",
+            "Description": "pathogens, primary & secondary response, vaccines"
+          },
+          {
+            "Title": "Biodiversity",
+            "Description": "sampling, classification, genetic diversity, conservation"
+          },
+          {
+            "Title": "Evolution and natural selection",
+            "Description": "Darwin, evidence, classification systems"
+          }
+        ]
+      }
+    ]
+  },
+  "Biology Year 13": {
+    "Title": "OCR A-Level Biology Year 13 (H420)",
+    "Topics": [
+      {
+        "Name": "Module 5",
+        "Title": "Communication, Homeostasis & Energy",
+        "Description": "Regulation systems and energy processes",
+        "Subtopics": [
+          {
+            "Title": "Communication and homeostasis",
+            "Description": "neuronal and hormonal communication"
+          },
+          {
+            "Title": "Excretion",
+            "Description": "liver, kidneys, nitrogenous waste"
+          },
+          {
+            "Title": "Neuronal communication",
+            "Description": "nerve impulses, synapses"
+          },
+          {
+            "Title": "Hormonal communication",
+            "Description": "endocrine system, adrenaline, insulin/glucagon"
+          },
+          {
+            "Title": "Plant and animal responses",
+            "Description": "tropisms, reflexes, muscle contraction"
+          },
+          {
+            "Title": "Photosynthesis",
+            "Description": "light-dependent & light-independent reactions, Calvin cycle"
+          },
+          {
+            "Title": "Respiration",
+            "Description": "glycolysis, link reaction, Krebs cycle, oxidative phosphorylation"
+          }
+        ]
+      },
+      {
+        "Name": "Module 6",
+        "Title": "Genetics, Evolution & Ecosystems",
+        "Description": "Advanced genetics and ecology",
+        "Subtopics": [
+          {
+            "Title": "Cellular control",
+            "Description": "gene expression, operons, mutations"
+          },
+          {
+            "Title": "Patterns of inheritance",
+            "Description": "monohybrid, dihybrid, sex-linked, chi-squared tests"
+          },
+          {
+            "Title": "Manipulating genomes",
+            "Description": "genetic engineering, PCR, gene sequencing"
+          },
+          {
+            "Title": "Cloning and biotechnology",
+            "Description": "microorganisms, artificial cloning, tissue culture"
+          },
+          {
+            "Title": "Ecosystems",
+            "Description": "food chains, nitrogen/carbon cycles, conservation"
+          },
+          {
+            "Title": "Populations and sustainability",
+            "Description": "competition, predator-prey, sustainable management"
+          }
+        ]
+      }
+    ]
+  },
+  "Chemistry": {
+    "Title": "OCR A-Level Chemistry (H432)",
+    "Topics": [
+      {
+        "Name": "Module 1",
+        "Title": "Practical Skills in Chemistry",
+        "Description": "Laboratory techniques and research skills",
+        "Subtopics": [
+          {
+            "Title": "Planning",
+            "Description": "Experimental planning and design"
+          },
+          {
+            "Title": "Implementing",
+            "Description": "Laboratory procedures and techniques"
+          },
+          {
+            "Title": "Analysis",
+            "Description": "Data analysis and interpretation"
+          },
+          {
+            "Title": "Evaluation",
+            "Description": "Assessing validity and reliability"
+          }
+        ]
+      },
+      {
+        "Name": "Module 2",
+        "Title": "Foundations in Chemistry",
+        "Description": "Core chemical concepts and principles",
+        "Subtopics": [
+          {
+            "Title": "Atoms, compounds, molecules, and equations",
+            "Description": "Basic concepts and equations"
+          },
+          {
+            "Title": "Amount of substance",
+            "Description": "moles, Avogadro's constant, gas volume calculations"
+          },
+          {
+            "Title": "Acid-base reactions",
+            "Description": "Basic acid-base chemistry"
+          },
+          {
+            "Title": "Redox reactions",
+            "Description": "Oxidation and reduction"
+          },
+          {
+            "Title": "Electron structure",
+            "Description": "Atomic structure and electron configuration"
+          },
+          {
+            "Title": "Bonding and structure",
+            "Description": "ionic, covalent, metallic bonding, intermolecular forces"
+          }
+        ]
+      },
+      {
+        "Name": "Module 3",
+        "Title": "Periodic Table and Energy",
+        "Description": "Periodic trends and thermodynamics",
+        "Subtopics": [
+          {
+            "Title": "Periodicity",
+            "Description": "Periodic trends and properties"
+          },
+          {
+            "Title": "Group 2",
+            "Description": "alkaline earth metals"
+          },
+          {
+            "Title": "Group 7",
+            "Description": "halogens"
+          },
+          {
+            "Title": "Qualitative analysis",
+            "Description": "Analysis techniques"
+          },
+          {
+            "Title": "Enthalpy changes and calorimetry",
+            "Description": "Energy changes in reactions"
+          },
+          {
+            "Title": "Reaction rates and catalysts",
+            "Description": "Kinetics fundamentals"
+          },
+          {
+            "Title": "Chemical equilibrium",
+            "Description": "Basic equilibrium concepts"
+          }
+        ]
+      },
+      {
+        "Name": "Module 4",
+        "Title": "Core Organic Chemistry",
+        "Description": "Fundamentals of organic compounds",
+        "Subtopics": [
+          {
+            "Title": "Basic concepts of organic chemistry",
+            "Description": "nomenclature, functional groups, isomerism"
+          },
+          {
+            "Title": "Alkanes",
+            "Description": "structure, properties, combustion, free radical substitution"
+          },
+          {
+            "Title": "Alkenes",
+            "Description": "structure, electrophilic addition, polymerization"
+          },
+          {
+            "Title": "Alcohols",
+            "Description": "oxidation, dehydration, esterification"
+          },
+          {
+            "Title": "Haloalkanes",
+            "Description": "nucleophilic substitution, hydrolysis"
+          },
+          {
+            "Title": "Organic synthesis pathways",
+            "Description": "Synthesis routes"
+          },
+          {
+            "Title": "Spectroscopy",
+            "Description": "Infrared (IR) and mass spectrometry (MS)"
+          }
+        ]
+      },
+      {
+        "Name": "Module 5",
+        "Title": "Physical Chemistry and Transition Elements",
+        "Description": "Advanced thermodynamics and d-block elements",
+        "Subtopics": [
+          {
+            "Title": "Reaction rates",
+            "Description": "rate equations, orders of reaction, rate-determining step"
+          },
+          {
+            "Title": "Equilibrium",
+            "Description": "Kc, Kp, Le Chatelier's principle"
+          },
+          {
+            "Title": "Acids, bases, and buffers",
+            "Description": "pH calculations, titration curves"
+          },
+          {
+            "Title": "Thermodynamics",
+            "Description": "Enthalpy, entropy, and Gibbs free energy"
+          },
+          {
+            "Title": "Redox and electrode potentials",
+            "Description": "Electrochemistry"
+          },
+          {
+            "Title": "Transition elements",
+            "Description": "complex ions, oxidation states, precipitation reactions"
+          }
+        ]
+      },
+      {
+        "Name": "Module 6",
+        "Title": "Organic Chemistry and Analysis",
+        "Description": "Advanced organic chemistry concepts",
+        "Subtopics": [
+          {
+            "Title": "Aromatic compounds",
+            "Description": "benzene, electrophilic substitution"
+          },
+          {
+            "Title": "Carbonyl compounds",
+            "Description": "aldehydes, ketones, nucleophilic addition"
+          },
+          {
+            "Title": "Carboxylic acids and esters",
+            "Description": "acid reactions, esterification"
+          },
+          {
+            "Title": "Amines",
+            "Description": "bases, synthesis"
+          },
+          {
+            "Title": "Biological chemistry",
+            "Description": "Amino acids, proteins, and DNA"
+          },
+          {
+            "Title": "Advanced analysis",
+            "Description": "Chromatography and NMR spectroscopy"
+          },
+          {
+            "Title": "Polymer chemistry",
+            "Description": "Polymer synthesis and properties"
+          }
+        ]
+      }
+    ]
+  },
+  "Psychology": {
+    "Title": "AQA A-Level Psychology (7182)",
+    "Topics": [
+      {
+        "Name": "Paper 1",
+        "Title": "Introductory Topics in Psychology",
+        "Description": "Core psychological concepts and theories",
+        "Subtopics": [
+          {
+            "Title": "Social Influence",
+            "Description": "Conformity, obedience, and resistance to social influence"
+          },
+          {
+            "Title": "Memory",
+            "Description": "Memory models and eyewitness testimony"
+          },
+          {
+            "Title": "Attachment",
+            "Description": "Caregiver-infant relationships and development"
+          },
+          {
+            "Title": "Psychopathology",
+            "Description": "Abnormality, disorders and treatments"
+          }
+        ]
+      },
+      {
+        "Name": "Paper 2",
+        "Title": "Psychology in Context",
+        "Description": "Research approaches and biopsychology",
+        "Subtopics": [
+          {
+            "Title": "Approaches",
+            "Description": "Major psychological perspectives and theories"
+          },
+          {
+            "Title": "Biopsychology",
+            "Description": "Biological basis of behavior and neural mechanisms"
+          },
+          {
+            "Title": "Research Methods",
+            "Description": "Scientific methodology in psychology"
+          }
+        ]
+      },
+      {
+        "Name": "Paper 3",
+        "Title": "Issues and Options in Psychology",
+        "Description": "Applied psychological perspectives",
+        "Subtopics": [
+          {
+            "Title": "Issues & Debates",
+            "Description": "Key conceptual discussions in psychology"
+          },
+          {
+            "Title": "Relationships",
+            "Description": "Formation, maintenance and breakdown of relationships"
+          },
+          {
+            "Title": "Schizophrenia",
+            "Description": "Understanding and treating schizophrenia"
+          },
+          {
+            "Title": "Aggression",
+            "Description": "Theories and explanations of aggressive behavior"
+          }
+        ]
+      }
+    ]
+  },
+  "Curriculum": {
+    "Biology Year 12": [
+      {
+        "Name": "Module 1",
+        "Title": "Development of Practical Skills in Biology",
+        "Description": "Applies to all modules and both years"
+      },
+      {
+        "Name": "Module 2",
+        "Title": "Foundations in Biology",
+        "Description": "Core biological concepts and fundamentals"
+      },
+      {
+        "Name": "Module 3",
+        "Title": "Exchange and Transport",
+        "Description": "Systems for material exchange in organisms"
+      },
+      {
+        "Name": "Module 4",
+        "Title": "Biodiversity, Evolution & Disease",
+        "Description": "Principles of classification, evolution, and disease"
+      }
+    ],
+    "Biology Year 13": [
+      {
+        "Name": "Module 5",
+        "Title": "Communication, Homeostasis & Energy",
+        "Description": "Regulation systems and energy processes"
+      },
+      {
+        "Name": "Module 6",
+        "Title": "Genetics, Evolution & Ecosystems",
+        "Description": "Advanced genetics and ecology"
+      }
+    ],
+    "Chemistry": [
+      {
+        "Name": "Module 2",
+        "Title": "Foundations in Chemistry",
+        "Description": "Core chemical concepts and principles"
+      },
+      {
+        "Name": "Module 3",
+        "Title": "Periodic Table and Energy",
+        "Description": "Periodic trends and thermodynamics"
+      },
+      {
+        "Name": "Module 4",
+        "Title": "Core Organic Chemistry",
+        "Description": "Fundamentals of organic compounds"
+      },
+      {
+        "Name": "Module 5",
+        "Title": "Physical Chemistry and Transition Elements",
+        "Description": "Advanced thermodynamics and d-block elements"
+      },
+      {
+        "Name": "Module 6",
+        "Title": "Organic Chemistry and Analysis",
+        "Description": "Advanced organic chemistry concepts"
+      }
+    ],
+    "Psychology": [
+      {
+        "Title": "Social Influence",
+        "Description": "Conformity, obedience, and resistance to social influence"
+      },
+      {
+        "Title": "Memory",
+        "Description": "Memory models and eyewitness testimony"
+      },
+      {
+        "Title": "Attachment",
+        "Description": "Caregiver-infant relationships and development"
+      },
+      {
+        "Title": "Psychopathology",
+        "Description": "Abnormality, disorders and treatments"
+      },
+      {
+        "Title": "Approaches",
+        "Description": "Major psychological perspectives and theories"
+      },
+      {
+        "Title": "Biopsychology",
+        "Description": "Biological basis of behavior and neural mechanisms"
+      },
+      {
+        "Title": "Research Methods",
+        "Description": "Scientific methodology in psychology"
+      },
+      {
+        "Title": "Issues & Debates",
+        "Description": "Key conceptual discussions in psychology"
+      },
+      {
+        "Title": "Relationships",
+        "Description": "Formation, maintenance and breakdown of relationships"
+      },
+      {
+        "Title": "Schizophrenia",
+        "Description": "Understanding and treating schizophrenia"
+      },
+      {
+        "Title": "Aggression",
+        "Description": "Theories and explanations of aggressive behavior"
+      }
+    ]
+  }
+}

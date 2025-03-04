@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+
+{% block title %}Curriculum - A-Level Study Tracker{% endblock %}
+{% block page_title %}Curriculum & Topic Confidence{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Your confidence level for each subtopic influences your overall topic confidence and how often it appears in your daily tasks.
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="curriculumTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="biology-tab" data-bs-toggle="tab" data-bs-target="#biology-content" type="button" role="tab" aria-controls="biology-content" aria-selected="true">
+                        Biology
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="chemistry-tab" data-bs-toggle="tab" data-bs-target="#chemistry-content" type="button" role="tab" aria-controls="chemistry-content" aria-selected="false">
+                        Chemistry
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="psychology-tab" data-bs-toggle="tab" data-bs-target="#psychology-content" type="button" role="tab" aria-controls="psychology-content" aria-selected="false">
+                        Psychology
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="curriculumTabContent">
+                <!-- Biology Tab -->
+                <div class="tab-pane fade show active" id="biology-content" role="tabpanel" aria-labelledby="biology-tab">
+                    <div class="card border-top-0 rounded-top-0">
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" id="biologyYearTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="biology-year12-tab" data-bs-toggle="tab" data-bs-target="#biology-year12-content" type="button" role="tab" aria-controls="biology-year12-content" aria-selected="true">
+                                        Year 12
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="biology-year13-tab" data-bs-toggle="tab" data-bs-target="#biology-year13-content" type="button" role="tab" aria-controls="biology-year13-content" aria-selected="false">
+                                        Year 13
+                                    </button>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content mt-3" id="biologyYearTabContent">
+                                <!-- Biology Year 12 Content -->
+                                <div class="tab-pane fade show active" id="biology-year12-content" role="tabpanel" aria-labelledby="biology-year12-tab">
+                                    <h3 class="mb-4">{{ curriculum['Biology Year 12'].Title }}</h3>
+                                    
+                                    <div class="accordion" id="biologyYear12Accordion">
+                                        {% for topic_group in curriculum['Biology Year 12'].Topics %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading-bio12-{{ loop.index }}">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-bio12-{{ loop.index }}" aria-expanded="{{ 'true' if loop.index == 1 else 'false' }}" aria-controls="collapse-bio12-{{ loop.index }}">
+                                                    {{ topic_group.Name }}: {{ topic_group.Title }}
+                                                </button>
+                                            </h2>
+                                            <div class="topic-progress">
+                                                <div class="progress mt-2 mb-2">
+                                                    <div class="progress-bar" role="progressbar" style="width: {{ (topic_confidences.get('topic_'+ topic_group.Name +'_BY12', 3) / 5 * 100)|round }}%" aria-valuenow="{{ topic_confidences.get('topic_'+ topic_group.Name +'_BY12', 3) }}" aria-valuemin="0" aria-valuemax="5">
+                                                        {{ topic_confidences.get('topic_'+ topic_group.Name +'_BY12', 3) }}/5
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="collapse-bio12-{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.index == 1 else '' }}" aria-labelledby="heading-bio12-{{ loop.index }}">
+                                                <div class="accordion-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Subtopic</th>
+                                                                    <th>Description</th>
+                                                                    <th style="width: 200px;">Confidence</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for subtopic in topic_group.Subtopics %}
+                                                                <tr>
+                                                                    <td>{{ subtopic.Title }}</td>
+                                                                    <td>{{ subtopic.Description }}</td>
+                                                                    <td>
+                                                                        <div class="confidence-selector d-flex" data-subtopic-id="{{ topic_group.Name }}_{{ subtopic.Title|replace(' ', '_') }}_BY12">
+                                                                            {% for i in range(1, 6) %}
+                                                                            <button type="button" class="btn btn-sm confidence-btn {{ 'selected' if subtopic_confidences.get(topic_group.Name + '_' + subtopic.Title|replace(' ', '_') + '_BY12', 3) == i else '' }}" data-value="{{ i }}">
+                                                                                {{ i }}
+                                                                            </button>
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Biology Year 13 Content -->
+                                <div class="tab-pane fade" id="biology-year13-content" role="tabpanel" aria-labelledby="biology-year13-tab">
+                                    <h3 class="mb-4">{{ curriculum['Biology Year 13'].Title }}</h3>
+                                    
+                                    <div class="accordion" id="biologyYear13Accordion">
+                                        {% for topic_group in curriculum['Biology Year 13'].Topics %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading-bio13-{{ loop.index }}">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-bio13-{{ loop.index }}" aria-expanded="{{ 'true' if loop.index == 1 else 'false' }}" aria-controls="collapse-bio13-{{ loop.index }}">
+                                                    {{ topic_group.Name }}: {{ topic_group.Title }}
+                                                </button>
+                                            </h2>
+                                            <div class="topic-progress">
+                                                <div class="progress mt-2 mb-2">
+                                                    <div class="progress-bar" role="progressbar" style="width: {{ (topic_confidences.get('topic_'+ topic_group.Name +'_BY13', 3) / 5 * 100)|round }}%" aria-valuenow="{{ topic_confidences.get('topic_'+ topic_group.Name +'_BY13', 3) }}" aria-valuemin="0" aria-valuemax="5">
+                                                        {{ topic_confidences.get('topic_'+ topic_group.Name +'_BY13', 3) }}/5
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="collapse-bio13-{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.index == 1 else '' }}" aria-labelledby="heading-bio13-{{ loop.index }}">
+                                                <div class="accordion-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Subtopic</th>
+                                                                    <th>Description</th>
+                                                                    <th style="width: 200px;">Confidence</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for subtopic in topic_group.Subtopics %}
+                                                                <tr>
+                                                                    <td>{{ subtopic.Title }}</td>
+                                                                    <td>{{ subtopic.Description }}</td>
+                                                                    <td>
+                                                                        <div class="confidence-selector d-flex" data-subtopic-id="{{ topic_group.Name }}_{{ subtopic.Title|replace(' ', '_') }}_BY13">
+                                                                            {% for i in range(1, 6) %}
+                                                                            <button type="button" class="btn btn-sm confidence-btn {{ 'selected' if subtopic_confidences.get(topic_group.Name + '_' + subtopic.Title|replace(' ', '_') + '_BY13', 3) == i else '' }}" data-value="{{ i }}">
+                                                                                {{ i }}
+                                                                            </button>
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chemistry Tab -->
+                <div class="tab-pane fade" id="chemistry-content" role="tabpanel" aria-labelledby="chemistry-tab">
+                    <div class="card border-top-0 rounded-top-0">
+                        <div class="card-body">
+                            <h3 class="mb-4">{{ curriculum.Chemistry.Title }}</h3>
+                            
+                            <div class="accordion" id="chemistryAccordion">
+                                {% for topic_group in curriculum.Chemistry.Topics %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading-chem-{{ loop.index }}">
+                                        <button class="accordion-button {{ 'collapsed' if loop.index > 1 else '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-chem-{{ loop.index }}" aria-expanded="{{ 'true' if loop.index == 1 else 'false' }}" aria-controls="collapse-chem-{{ loop.index }}">
+                                            {{ topic_group.Name }}: {{ topic_group.Title }}
+                                        </button>
+                                    </h2>
+                                    <div class="topic-progress">
+                                        <div class="progress mt-2 mb-2">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ (topic_confidences.get('topic_'+ topic_group.Name +'_CHEM', 3) / 5 * 100)|round }}%" aria-valuenow="{{ topic_confidences.get('topic_'+ topic_group.Name +'_CHEM', 3) }}" aria-valuemin="0" aria-valuemax="5">
+                                                {{ topic_confidences.get('topic_'+ topic_group.Name +'_CHEM', 3) }}/5
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="collapse-chem-{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.index == 1 else '' }}" aria-labelledby="heading-chem-{{ loop.index }}">
+                                        <div class="accordion-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Subtopic</th>
+                                                            <th>Description</th>
+                                                            <th style="width: 200px;">Confidence</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for subtopic in topic_group.Subtopics %}
+                                                        <tr>
+                                                            <td>{{ subtopic.Title }}</td>
+                                                            <td>{{ subtopic.Description }}</td>
+                                                            <td>
+                                                                <div class="confidence-selector d-flex" data-subtopic-id="{{ topic_group.Name }}_{{ subtopic.Title|replace(' ', '_') }}_CHEM">
+                                                                    {% for i in range(1, 6) %}
+                                                                    <button type="button" class="btn btn-sm confidence-btn {{ 'selected' if subtopic_confidences.get(topic_group.Name + '_' + subtopic.Title|replace(' ', '_') + '_CHEM', 3) == i else '' }}" data-value="{{ i }}">
+                                                                        {{ i }}
+                                                                    </button>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Psychology Tab -->
+                <div class="tab-pane fade" id="psychology-content" role="tabpanel" aria-labelledby="psychology-tab">
+                    <div class="card border-top-0 rounded-top-0">
+                        <div class="card-body">
+                            <h3 class="mb-4">{{ curriculum.Psychology.Title }}</h3>
+                            
+                            <div class="accordion" id="psychologyAccordion">
+                                {% for topic_group in curriculum.Psychology.Topics %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading-psych-{{ loop.index }}">
+                                        <button class="accordion-button {{ 'collapsed' if loop.index > 1 else '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-psych-{{ loop.index }}" aria-expanded="{{ 'true' if loop.index == 1 else 'false' }}" aria-controls="collapse-psych-{{ loop.index }}">
+                                            {{ topic_group.Name }}: {{ topic_group.Title }}
+                                        </button>
+                                    </h2>
+                                    <div class="topic-progress">
+                                        <div class="progress mt-2 mb-2">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ (topic_confidences.get('topic_'+ topic_group.Name|lower +'_PSYCH', 3) / 5 * 100)|round }}%" aria-valuenow="{{ topic_confidences.get('topic_'+ topic_group.Name|lower +'_PSYCH', 3) }}" aria-valuemin="0" aria-valuemax="5">
+                                                {{ topic_confidences.get('topic_'+ topic_group.Name|lower +'_PSYCH', 3) }}/5
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="collapse-psych-{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.index == 1 else '' }}" aria-labelledby="heading-psych-{{ loop.index }}">
+                                        <div class="accordion-body">
+                                            <div class="accordion" id="psychTopicsAccordion-{{ loop.index }}">
+                                                {% for subtopic in topic_group.Subtopics %}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="heading-psych-subtopic-{{ topic_group.Name|lower }}-{{ loop.index }}">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-psych-subtopic-{{ topic_group.Name|lower }}-{{ loop.index }}" aria-expanded="false" aria-controls="collapse-psych-subtopic-{{ topic_group.Name|lower }}-{{ loop.index }}">
+                                                            {{ subtopic.Title }}
+                                                            <div class="confidence-selector d-flex ms-3" data-subtopic-id="{{ topic_group.Name|lower }}_{{ subtopic.Title|replace(' ', '_') }}_PSYCH">
+                                                                {% for i in range(1, 6) %}
+                                                                <button type="button" class="btn btn-sm confidence-btn {{ 'selected' if subtopic_confidences.get(topic_group.Name|lower + '_' + subtopic.Title|replace(' ', '_') + '_PSYCH', 3) == i else '' }}" data-value="{{ i }}">
+                                                                    {{ i }}
+                                                                </button>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapse-psych-subtopic-{{ topic_group.Name|lower }}-{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading-psych-subtopic-{{ topic_group.Name|lower }}-{{ loop.index }}">
+                                                        <div class="accordion-body">
+                                                            <p>{{ subtopic.Description }}</p>
+                                                            {% if subtopic.Content is defined and subtopic.Content|length > 0 %}
+                                                            <ul class="list-group mt-3">
+                                                                {% for content_item in subtopic.Content %}
+                                                                <li class="list-group-item">{{ content_item }}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.confidence-selector {
+    display: flex;
+    gap: 2px;
+}
+
+.confidence-btn {
+    flex: 1;
+    border-radius: 0;
+    padding: 3px 8px;
+    background-color: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.confidence-btn:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.confidence-btn:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.confidence-btn.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.confidence-btn:hover:not(.selected) {
+    background-color: #e0e0e0;
+}
+
+.topic-progress {
+    padding: 0 20px;
+}
+
+.progress {
+    height: 20px;
+}
+
+.progress-bar {
+    transition: width 0.3s ease;
+    background-color: #28a745;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to all confidence buttons
+    document.querySelectorAll('.confidence-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const container = this.closest('.confidence-selector');
+            const subtopicId = container.dataset.subtopicId;
+            const confidenceValue = parseInt(this.dataset.value);
+            
+            // Update UI
+            container.querySelectorAll('.confidence-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            
+            // Send update to server
+            updateSubtopicConfidence(subtopicId, confidenceValue);
+        });
+    });
+    
+    // Function to update subtopic confidence
+    function updateSubtopicConfidence(subtopicId, confidenceLevel) {
+        fetch(`/api/subtopic-confidence/${subtopicId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                confidence_level: confidenceLevel
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Success notification could be added here
+                console.log(`Updated subtopic ${subtopicId} confidence to ${confidenceLevel}`);
+                
+                // Update topic progress bar if it was returned
+                if (data.topic_confidence) {
+                    const topicId = data.topic_id;
+                    const topicConfidence = data.topic_confidence;
+                    const progressBar = document.querySelector(`[data-topic-id="${topicId}"] .progress-bar`);
+                    if (progressBar) {
+                        progressBar.style.width = `${(topicConfidence / 5) * 100}%`;
+                        progressBar.setAttribute('aria-valuenow', topicConfidence);
+                        progressBar.textContent = `${topicConfidence}/5`;
+                    }
+                }
+            }
+        })
+        .catch(error => console.error('Error updating subtopic confidence:', error));
+    }
+});
+</script>
+{% endblock %}
