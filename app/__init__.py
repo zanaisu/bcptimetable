@@ -46,6 +46,13 @@ def create_app():
     expected_db_path = os.path.join(db_dir, 'timetable.db')
     print(f"Expected database path: {expected_db_path}")
     
+    # Log database URL being used (with credentials hidden)
+    masked_url = database_url
+    if "://" in database_url:
+        parts = database_url.split("://", 1)
+        masked_url = f"{parts[0]}://******:******@" + parts[1].split("@")[-1] if "@" in parts[1] else f"{parts[0]}://******"
+    print(f"Using database URL: {masked_url}")
+    
     # Initialize extensions with app context
     with app.app_context():
         # Initialize extensions
