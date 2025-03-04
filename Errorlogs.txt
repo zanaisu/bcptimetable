@@ -1,0 +1,15 @@
+python: can't open file 'C:\\Users\\Tomho\\Documents\\Timetable\\bcptimetable\\db_debug.py': [Errno 2] No such file or directory
+y 
+Traceback (most recent call last):
+  File "C:\Users\Tomho\Documents\Timetable\bcptimetable\create_db.py", line 2, in <module>
+    from app import create_app, db
+  File "C:\Users\Tomho\Documents\Timetable\bcptimetable\app\__init__.py", line 1, in <module>
+    from flask import Flask
+ModuleNotFoundError: No module named 'flask'
+Traceback (most recent call last):
+  File "C:\Users\Tomho\Documents\Timetable\bcptimetable\load_curriculum.py", line 1, in <module>
+    from app import create_app
+  File "C:\Users\Tomho\Documents\Timetable\bcptimetable\app\__init__.py", line 1, in <module>
+    from flask import Flask
+ModuleNotFoundError: No module named 'flask'
+C:\Users\Tomho\Documents\Timetable\bcptimetable\venv\Scripts\python.exe: No module named flask
